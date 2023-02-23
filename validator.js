@@ -1,9 +1,7 @@
-function Validator(formSelector, options) {
+function Validator(formSelector) {
 
+    var _this = this;
 
-    if (!options) {
-        options = {};
-    }
 
     var formRules = {};
 
@@ -67,10 +65,11 @@ function Validator(formSelector, options) {
 
             function handleValidate(event) {
                 var rules = formRules[event.target.name]
+                
                 var errorMessage;
 
                 for (var rule of rules) { 
-                    errorMessage = rule(event.target.name)
+                    errorMessage = rule(event.target.value)
                     if (errorMessage) break;
                 }
 
@@ -103,6 +102,9 @@ function Validator(formSelector, options) {
 
     // Xử lý hành vi form submit
     formElement.onsubmit = function (event) {
+        
+        console.log(_this);
+        
         event.preventDefault()
         var isValid = true;
 
@@ -117,7 +119,7 @@ function Validator(formSelector, options) {
     // Khi không có lỗi thì submit form
     if (isValid) {
 
-        if (typeof options.onSubmit === 'function') {
+        if (typeof _this.onSubmit === 'function') {
             
         var enableInputs = formElement.querySelectorAll('[name]')
         var formValues = Array.from(enableInputs).reduce(function(values, input) {
@@ -144,7 +146,7 @@ function Validator(formSelector, options) {
           }, {})
 
             // Gọi lại hàm onSubmit và trả về data
-            options.onSubmit(formValues)
+            _this.onSubmit(formValues)
         } else {
             formElement.submit(formValues); 
         }
